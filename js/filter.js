@@ -1,6 +1,6 @@
 // filters.js
-// Manages filter state and exposes getFilteredData().
-// All chart files call getFilteredData() instead of getAllData() directly.
+// manages filter state and exposes getFilteredData().
+// all chart files call getFilteredData() instead of getAllData() directly.
 
 var _filters = {
     year:      null,   // number or null (null = all years)
@@ -9,7 +9,7 @@ var _filters = {
     dateTo:    null,   // Date or null
 };
 
-// Called by index.html after filters change. Redraws all visible charts.
+// called by index.html after filters change, redraws all visible charts
 var _onFilterChange = null;
 
 function registerFilterCallback(fn) {
@@ -20,8 +20,7 @@ function _notifyCharts() {
     if (typeof _onFilterChange === "function") _onFilterChange();
 }
 
-// ── Setters (called by the filter UI) ────────────────────────────────────────
-
+// setters
 function setYear(val) {
     _filters.year  = val ? +val : null;
     _filters.month = null; // reset month when year changes
@@ -49,8 +48,7 @@ function resetFilters() {
     _notifyCharts();
 }
 
-// ── Getter ────────────────────────────────────────────────────────────────────
-
+// getter
 function getFilteredData() {
     return getAllData().filter(function(r) {
         // year filter
@@ -73,8 +71,7 @@ function getFilteredData() {
     });
 }
 
-// ── State read (used by UI to keep controls in sync) ─────────────────────────
-
+// state read - used by UI to keep controls in sync
 function getFilters() {
     return Object.assign({}, _filters);
 }

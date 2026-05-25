@@ -1,240 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Diet Dashboard</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diet Visuals</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body>
 
-  <!-- ── Navbar ─────────────────────────────────────────────────────────── -->
-  <nav>
-    <div class="nav-brand">diet <span>dashboard</span></div>
-    <ul class="nav-links">
-      <li><a href="#" data-chart="calories"  class="active">Calories</a></li>
-      <li><a href="#" data-chart="deficit"              >Deficit</a></li>
-      <li><a href="#" data-chart="weight"               >Weight</a></li>
-      <li><a href="#" data-chart="meals"                >Meals</a></li>
-      <li><a href="#" data-chart="activity"             >Activity</a></li>
-    </ul>
-  </nav>
+    <!-- navbar -->
+    <nav>
+        <div class="nav-brand">Diet Visuals</div>
 
-  <!-- ── Filter bar ─────────────────────────────────────────────────────── -->
-  <div class="filter-bar">
+        <ul class="nav-links">
+            <li><a href="#" data-chart="deficit-weight" class="active">Deficit & Weight</a></li>
+            
+            <li><a href="#" data-chart="deficit" class="active">Deficit</a></li>
+            <li><a href="#" data-chart="weight" class="active">Weight</a></li>
+            <li><a href="#" data-chart="meals" class="active">Meals</a></li>
+            <li><a href="#" data-chart="activity" class="active">Activity</a></li>
+        </ul>
+    </nav>
 
-    <div class="filter-group">
-      <span class="filter-label">Year</span>
-      <select id="filter-year">
-        <option value="">All</option>
-        <option value="2020">2020</option>
-        <option value="2021">2021</option>
-        <option value="2022">2022</option>
-        <option value="2023">2023</option>
-        <option value="2024">2024</option>
-        <option value="2025">2025</option>
-        <option value="2026">2026</option>
-      </select>
+    <!-- filter bar -->
+    <div class="filter-bar">
+
+        <div class="filter-group">
+            <span class="filter-label">Year</span>
+
+            <select id="filter-year">
+                <option value="">All</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <span class="filter-label">Month</span>
+
+            <select id="filter-month">
+                <option value="">All</option>
+                <option value="1">Jan</option>
+                <option value="2">Feb</option>
+                <option value="3">Mar</option>
+                <option value="4">Apr</option>
+                <option value="5">May</option>
+                <option value="6">Jun</option>
+                <option value="7">Jul</option>
+                <option value="8">Aug</option>
+                <option value="9">Sep</option>
+                <option value="10">Oct</option>
+                <option value="11">Nov</option>
+                <option value="12">Dec</option>
+            </select>
+        </div>
+
+        <div class="filter-divider"></div>
+
+        <div class="filter-group">
+            <span class="filter-label">From / To</span>
+
+            <div class="filter-range">
+                <input type="date" id="filter-from" min="2020-01-13" max="2026-05-10"/>
+                <span class="filter-range-sep">—</span>
+                <input type="date" id="filter-to" min="2020-01-13" max="2026-05-10"/>
+            </div>
+        </div>
+
+        <button class="btn-reset" id="btn-reset">Reset</button>
+
     </div>
 
-    <div class="filter-group">
-      <span class="filter-label">Month</span>
-      <select id="filter-month">
-        <option value="">All</option>
-        <option value="1">Jan</option>
-        <option value="2">Feb</option>
-        <option value="3">Mar</option>
-        <option value="4">Apr</option>
-        <option value="5">May</option>
-        <option value="6">Jun</option>
-        <option value="7">Jul</option>
-        <option value="8">Aug</option>
-        <option value="9">Sep</option>
-        <option value="10">Oct</option>
-        <option value="11">Nov</option>
-        <option value="12">Dec</option>
-      </select>
-    </div>
+    <!-- main -->
+    <main>
 
-    <div class="filter-divider"></div>
-
-    <div class="filter-group">
-      <span class="filter-label">From / To</span>
-      <div class="filter-range">
-        <input type="date" id="filter-from" min="2020-01-13" max="2026-05-10" />
-        <span class="filter-range-sep">—</span>
-        <input type="date" id="filter-to"   min="2020-01-13" max="2026-05-10" />
-      </div>
-    </div>
-
-    <button class="btn-reset" id="btn-reset">Reset</button>
-
-  </div>
-
-  <!-- ── Main ───────────────────────────────────────────────────────────── -->
-  <main>
-
-    <div id="loading"><span class="dot-pulse">Loading data</span></div>
-
-    <!-- Calories chart -->
-    <section class="chart-section active" id="section-calories">
-      <div class="chart-card">
-        <div class="chart-header">
-          <h2 class="chart-title">Calorie Overview</h2>
-          <span class="chart-subtitle">daily intake vs. burn target</span>
+        <div id="loading">
+            <span class="dot-pulse">Loading data</span>
         </div>
-        <div class="chart-body" id="chart-calories"></div>
-      </div>
-    </section>
 
-    <!-- Deficit chart -->
-    <section class="chart-section" id="section-deficit">
-      <div class="chart-card">
-        <div class="chart-header">
-          <h2 class="chart-title">Deficit / Surplus</h2>
-          <span class="chart-subtitle">daily energy balance</span>
-        </div>
-        <div class="chart-body" id="chart-deficit"></div>
-      </div>
-    </section>
+        <!-- deficit weight chart -->
+        <section class="chart-section active" id="section-deficit-weight">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h2 class="chart-title">Deficit & Weight</h2>
+                    <span class="chart-subtitle">daily calorie deficit vs body weight over time</span>
+                </div>
+                
+                <div class="chart-body" id="chart-deficit-weight"></div>
+            </div>
+        </section>
 
-    <!-- Weight chart -->
-    <section class="chart-section" id="section-weight">
-      <div class="chart-card">
-        <div class="chart-header">
-          <h2 class="chart-title">Body Weight</h2>
-          <span class="chart-subtitle">recorded weight in kg — 2023 onwards</span>
-        </div>
-        <div class="chart-body" id="chart-weight"></div>
-      </div>
-    </section>
+        <!-- deficit chart -->
+        <section class="chart-section active" id="section-deficit">
 
-    <!-- Meals chart -->
-    <section class="chart-section" id="section-meals">
-      <div class="chart-card">
-        <div class="chart-header">
-          <h2 class="chart-title">Meal Breakdown</h2>
-          <span class="chart-subtitle">breakfast / lunch / dinner split</span>
-        </div>
-        <div class="chart-body" id="chart-meals"></div>
-      </div>
-    </section>
+            <div class="chart-card">
 
-    <!-- Activity chart -->
-    <section class="chart-section" id="section-activity">
-      <div class="chart-card">
-        <div class="chart-header">
-          <h2 class="chart-title">Activity</h2>
-          <span class="chart-subtitle">calories burned through exercise — 2023 onwards</span>
-        </div>
-        <div class="chart-body" id="chart-activity"></div>
-      </div>
-    </section>
+                <div class="chart-header">
+                    <h2 class="chart-title">Deficit / Surplus</h2>
+                    <span class="chart-subtitle">
+                        daily energy balance
+                    </span>
+                </div>
 
-  </main>
+                <div class="chart-body" id="chart-deficit"></div>
 
-  <!-- ── Scripts ────────────────────────────────────────────────────────── -->
-  <script src="js/data.js"></script>
-  <script src="js/filters.js"></script>
-  <script src="js/chart-calories.js"></script>
-  <script src="js/chart-deficit.js"></script>
-  <script src="js/chart-weight.js"></script>
-  <script src="js/chart-meals.js"></script>
-  <script src="js/chart-activity.js"></script>
+            </div>
 
-  <script>
-    // ── Navbar toggle ──────────────────────────────────────────────────────
-    var navLinks      = document.querySelectorAll(".nav-links a");
-    var chartSections = document.querySelectorAll(".chart-section");
+        </section>
 
-    navLinks.forEach(function(link) {
-      link.addEventListener("click", function(e) {
-        e.preventDefault();
-        var target  = this.dataset.chart;
-        var section = document.getElementById("section-" + target);
-        var isVisible = section.classList.contains("active");
+        <!-- weight chart -->
+        <section class="chart-section active" id="section-weight">
 
-        // toggle this chart on/off independently
-        section.classList.toggle("active");
-        this.classList.toggle("active");
+            <div class="chart-card">
 
-        // if just made visible, draw it
-        if (!isVisible) updateActiveChart(target);
-      });
-    });
+                <div class="chart-header">
+                    <h2 class="chart-title">Body Weight</h2>
 
-    // ── Filter wiring ──────────────────────────────────────────────────────
-    document.getElementById("filter-year").addEventListener("change", function() {
-      // sync month dropdown and date inputs when year changes
-      document.getElementById("filter-month").value = "";
-      document.getElementById("filter-from").value  = "";
-      document.getElementById("filter-to").value    = "";
-      setYear(this.value);
-    });
+                    <span class="chart-subtitle">
+                        recorded weight in kg — 2023 onwards
+                    </span>
+                </div>
 
-    document.getElementById("filter-month").addEventListener("change", function() {
-      setMonth(this.value);
-    });
+                <div class="chart-body" id="chart-weight"></div>
 
-    document.getElementById("filter-from").addEventListener("change", function() {
-      setDateFrom(this.value);
-    });
+            </div>
 
-    document.getElementById("filter-to").addEventListener("change", function() {
-      setDateTo(this.value);
-    });
+        </section>
 
-    document.getElementById("btn-reset").addEventListener("click", function() {
-      document.getElementById("filter-year").value  = "";
-      document.getElementById("filter-month").value = "";
-      document.getElementById("filter-from").value  = "";
-      document.getElementById("filter-to").value    = "";
-      resetFilters();
-    });
+        <!-- meals chart -->
+        <section class="chart-section active" id="section-meals">
 
-    // ── Chart dispatch ─────────────────────────────────────────────────────
-    function updateActiveChart(name) {
-      var map = {
-        calories: updateCaloriesChart,
-        deficit:  updateDeficitChart,
-        weight:   updateWeightChart,
-        meals:    updateMealsChart,
-        activity: updateActivityChart,
-      };
-      if (typeof map[name] === "function") map[name]();
-    }
+            <div class="chart-card">
 
-    // Register filter callback — redraws all currently visible charts
-    registerFilterCallback(function() {
-      navLinks.forEach(function(link) {
-        if (link.classList.contains("active")) {
-          updateActiveChart(link.dataset.chart);
+                <div class="chart-header">
+                    <h2 class="chart-title">Meal Breakdown</h2>
+
+                    <span class="chart-subtitle">
+                        breakfast / lunch / dinner split
+                    </span>
+                </div>
+
+                <div class="chart-body" id="chart-meals"></div>
+
+            </div>
+
+        </section>
+
+        <!-- activity chart -->
+        <section class="chart-section active" id="section-activity">
+
+            <div class="chart-card">
+
+                <div class="chart-header">
+                    <h2 class="chart-title">Activity</h2>
+
+                    <span class="chart-subtitle">
+                        calories burned through exercise — 2023 onwards
+                    </span>
+                </div>
+
+                <div class="chart-body" id="chart-activity"></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- scripts -->
+    <script src="js/data.js"></script>
+    <script src="js/filter.js"></script>
+    <script src="js/chart-deficit-weight.js"></script>
+<!--     
+    <script src="js/chart-deficit.js"></script>
+    <script src="js/chart-weight.js"></script>
+    <script src="js/chart-meals.js"></script>
+    <script src="js/chart-activity.js"></script> -->
+
+    <script>
+
+        // navbar toggle
+        var navLinks = document.querySelectorAll(".nav-links a");
+        var chartSections = document.querySelectorAll(".chart-section");
+
+        navLinks.forEach(function(link) {
+
+            link.addEventListener("click", function(e) {
+
+                e.preventDefault();
+
+                var target = this.dataset.chart;
+
+                var section = document.getElementById(
+                    "section-" + target
+                );
+
+                var isVisible = section.classList.contains("active");
+
+                // toggle this chart on/off independently
+                section.classList.toggle("active");
+                this.classList.toggle("active");
+
+                // if just made visible, draw it
+                if (!isVisible) {
+                    updateActiveChart(target);
+                }
+            });
+        });
+
+        // filter wiring
+        document.getElementById("filter-year").addEventListener("change", function() {
+            // sync month dropdown and date inputs when year changes
+            document.getElementById("filter-month").value = "";
+            document.getElementById("filter-from").value = "";
+            document.getElementById("filter-to").value = "";
+            setYear(this.value);
+        });
+
+        document.getElementById("filter-month").addEventListener("change", function() {
+            setMonth(this.value);
+        });
+
+        document.getElementById("filter-from").addEventListener("change", function() {
+            setDateFrom(this.value);
+        });
+
+        document.getElementById("filter-to").addEventListener("change", function() {
+            setDateTo(this.value);
+        }); 
+
+        document.getElementById("btn-reset").addEventListener("click", function() {
+            document.getElementById("filter-year").value = "";
+            document.getElementById("filter-month").value = "";
+            document.getElementById("filter-from").value = "";
+            document.getElementById("filter-to").value = "";
+            resetFilters();
+        });
+
+        // chart dispatch 
+        function updateActiveChart(name) {
+            var map = {
+                "deficit-weight": updateDeficitWeightChart,
+            };
+            if (typeof map[name] === "function") {
+                map[name]();
+            }
         }
-      });
-    });
 
-    // ── Boot ───────────────────────────────────────────────────────────────
-    loadData().then(function() {
-      document.getElementById("loading").style.display = "none";
+        // register filter callback — redraws all currently visible charts
+        registerFilterCallback(function() {
+            navLinks.forEach(function(link) {
+                if (link.classList.contains("active")) {
+                    updateActiveChart(link.dataset.chart);
+                }
+            });
+        });
 
-      // init all charts (sets up SVG containers)
-      initCaloriesChart();
-      initDeficitChart();
-      initWeightChart();
-      initMealsChart();
-      initActivityChart();
+        // load everything
+        loadData().then(function() {
+            document.getElementById("loading").style.display = "none";
+            // init all charts (sets up SVG containers)
+            initDeficitWeightChart();
 
-      // draw the default visible chart
-      updateCaloriesChart();
+            // draw the default visible chart
+            updateDeficitWeightChart();
 
-    }).catch(function(err) {
-      document.getElementById("loading").textContent = "Error: " + err.message;
-    });
-  </script>
+        }).catch(function(err) {
+            document.getElementById("loading").textContent =
+                "Error: " + err.message;
+        });
+    </script>
 
 </body>
 </html>

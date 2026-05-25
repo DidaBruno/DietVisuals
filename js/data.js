@@ -1,13 +1,3 @@
-// data.js 
-//
-// Every chart file calls functions from here. No chart ever touches the raw
-// CSV directly. This means if the CSV format changes, you fix it in one place.
-//
-// Responsibilities:
-//   1. PARSING     - load the CSV and convert every row to a clean JS object
-//   2. FILTERING   - return slices of data based on year / month / date range
-//   3. AGGREGATING - computed datasets that specific charts need2
-
 let _data = [];
 
 function loadData() {
@@ -35,7 +25,7 @@ function parseRow(raw) {
 
     // derived fields
     var totalBurn = bmr + activityKcal;
-    var deficit   = totalBurn - totalIntake;
+    var deficit   = totalIntake - totalBurn;
 
     // weight
     var weight = null;
