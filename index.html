@@ -19,11 +19,7 @@
 
         <ul class="nav-links">
             <li><a href="#" data-chart="deficit-weight" class="active">Deficit & Weight</a></li>
-            
-            <li><a href="#" data-chart="deficit" class="active">Deficit</a></li>
-            <li><a href="#" data-chart="weight" class="active">Weight</a></li>
-            <li><a href="#" data-chart="meals" class="active">Meals</a></li>
-            <li><a href="#" data-chart="activity" class="active">Activity</a></li>
+            <li><a href="#" data-chart="activity-weight" class="active">Activity & Weight</a></li>
         </ul>
     </nav>
 
@@ -95,84 +91,19 @@
                     <h2 class="chart-title">Deficit & Weight</h2>
                     <span class="chart-subtitle">daily calorie deficit vs body weight over time</span>
                 </div>
-                
                 <div class="chart-body" id="chart-deficit-weight"></div>
             </div>
         </section>
 
-        <!-- deficit chart -->
-        <section class="chart-section active" id="section-deficit">
-
+        <!-- activity weight chart -->
+        <section class="chart-section active" id="section-activity-weight">
             <div class="chart-card">
-
                 <div class="chart-header">
-                    <h2 class="chart-title">Deficit / Surplus</h2>
-                    <span class="chart-subtitle">
-                        daily energy balance
-                    </span>
+                    <h2 class="chart-title">Activity & Weight</h2>
+                    <span class="chart-subtitle">daily activity calories burned vs body weight over time</span>
                 </div>
-
-                <div class="chart-body" id="chart-deficit"></div>
-
+                <div class="chart-body" id="chart-activity-weight"></div>
             </div>
-
-        </section>
-
-        <!-- weight chart -->
-        <section class="chart-section active" id="section-weight">
-
-            <div class="chart-card">
-
-                <div class="chart-header">
-                    <h2 class="chart-title">Body Weight</h2>
-
-                    <span class="chart-subtitle">
-                        recorded weight in kg — 2023 onwards
-                    </span>
-                </div>
-
-                <div class="chart-body" id="chart-weight"></div>
-
-            </div>
-
-        </section>
-
-        <!-- meals chart -->
-        <section class="chart-section active" id="section-meals">
-
-            <div class="chart-card">
-
-                <div class="chart-header">
-                    <h2 class="chart-title">Meal Breakdown</h2>
-
-                    <span class="chart-subtitle">
-                        breakfast / lunch / dinner split
-                    </span>
-                </div>
-
-                <div class="chart-body" id="chart-meals"></div>
-
-            </div>
-
-        </section>
-
-        <!-- activity chart -->
-        <section class="chart-section active" id="section-activity">
-
-            <div class="chart-card">
-
-                <div class="chart-header">
-                    <h2 class="chart-title">Activity</h2>
-
-                    <span class="chart-subtitle">
-                        calories burned through exercise — 2023 onwards
-                    </span>
-                </div>
-
-                <div class="chart-body" id="chart-activity"></div>
-
-            </div>
-
         </section>
 
     </main>
@@ -181,17 +112,18 @@
     <script src="js/data.js"></script>
     <script src="js/filter.js"></script>
     <script src="js/chart-deficit-weight.js"></script>
-<!--     
+    <script src="js/chart-activity-weight.js"></script>
+<!--
     <script src="js/chart-deficit.js"></script>
     <script src="js/chart-weight.js"></script>
     <script src="js/chart-meals.js"></script>
-    <script src="js/chart-activity.js"></script> -->
+    <script src="js/chart-activity.js"></script>
+-->
 
     <script>
 
         // navbar toggle
         var navLinks = document.querySelectorAll(".nav-links a");
-        var chartSections = document.querySelectorAll(".chart-section");
 
         navLinks.forEach(function(link) {
 
@@ -199,19 +131,13 @@
 
                 e.preventDefault();
 
-                var target = this.dataset.chart;
-
-                var section = document.getElementById(
-                    "section-" + target
-                );
-
+                var target  = this.dataset.chart;
+                var section = document.getElementById("section-" + target);
                 var isVisible = section.classList.contains("active");
 
-                // toggle this chart on/off independently
                 section.classList.toggle("active");
                 this.classList.toggle("active");
 
-                // if just made visible, draw it
                 if (!isVisible) {
                     updateActiveChart(target);
                 }
@@ -220,10 +146,9 @@
 
         // filter wiring
         document.getElementById("filter-year").addEventListener("change", function() {
-            // sync month dropdown and date inputs when year changes
             document.getElementById("filter-month").value = "";
-            document.getElementById("filter-from").value = "";
-            document.getElementById("filter-to").value = "";
+            document.getElementById("filter-from").value  = "";
+            document.getElementById("filter-to").value    = "";
             setYear(this.value);
         });
 
@@ -237,27 +162,28 @@
 
         document.getElementById("filter-to").addEventListener("change", function() {
             setDateTo(this.value);
-        }); 
+        });
 
         document.getElementById("btn-reset").addEventListener("click", function() {
-            document.getElementById("filter-year").value = "";
+            document.getElementById("filter-year").value  = "";
             document.getElementById("filter-month").value = "";
-            document.getElementById("filter-from").value = "";
-            document.getElementById("filter-to").value = "";
+            document.getElementById("filter-from").value  = "";
+            document.getElementById("filter-to").value    = "";
             resetFilters();
         });
 
-        // chart dispatch 
+        // chart dispatch
         function updateActiveChart(name) {
             var map = {
-                "deficit-weight": updateDeficitWeightChart,
+                "deficit-weight":  updateDeficitWeightChart,
+                "activity-weight": updateActivityWeightChart,
             };
             if (typeof map[name] === "function") {
                 map[name]();
             }
         }
 
-        // register filter callback — redraws all currently visible charts
+        // redraws all currently visible charts on filter change
         registerFilterCallback(function() {
             navLinks.forEach(function(link) {
                 if (link.classList.contains("active")) {
@@ -269,15 +195,15 @@
         // load everything
         loadData().then(function() {
             document.getElementById("loading").style.display = "none";
-            // init all charts (sets up SVG containers)
-            initDeficitWeightChart();
 
-            // draw the default visible chart
+            initDeficitWeightChart();
+            initActivityWeightChart();
+
             updateDeficitWeightChart();
+            updateActivityWeightChart();
 
         }).catch(function(err) {
-            document.getElementById("loading").textContent =
-                "Error: " + err.message;
+            document.getElementById("loading").textContent = "Error: " + err.message;
         });
     </script>
 
