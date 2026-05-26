@@ -14,7 +14,7 @@ function parseRow(raw) {
     // date
     var date = parseDate(raw["Datum"]);
     if (!date) return null;
-
+    
     // numeric columns
     var breakfastKcal = +raw["Doručak (kcal)"]   || 0;
     var lunchKcal     = +raw["Ručak (kcal)"]     || 0;

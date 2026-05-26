@@ -1,9 +1,9 @@
 (function () {
 
-    var _svg      = null;
-    var _dims     = null;
+    var _svg = null;
+    var _dims = null;
     var CONTAINER = "chart-activity-weight";
-    var ROLL_WIN  = 7; // rolling-average window size
+    var ROLL_WIN = 7; // rolling-average window size
 
     /* init */
     function initActivityWeightChart() {

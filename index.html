@@ -20,6 +20,7 @@
         <ul class="nav-links">
             <li><a href="#" data-chart="deficit-weight" class="active">Deficit & Weight</a></li>
             <li><a href="#" data-chart="activity-weight" class="active">Activity & Weight</a></li>
+            <li><a href="#" data-chart="activity-heatmap" class="active">Activity Heatmap</a></li>
         </ul>
     </nav>
 
@@ -106,6 +107,17 @@
             </div>
         </section>
 
+        <!-- activity heatmap -->
+        <section class="chart-section active" id="section-activity-heatmap">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h2 class="chart-title">Activity Heatmap</h2>
+                    <span class="chart-subtitle">calories burned from activites per day</span>
+                </div>
+                <div class="chart-body" id="chart-activity-heatmap"></div>
+            </div>
+        </section>
+
     </main>
 
     <!-- scripts -->
@@ -113,12 +125,7 @@
     <script src="js/filter.js"></script>
     <script src="js/chart-deficit-weight.js"></script>
     <script src="js/chart-activity-weight.js"></script>
-<!--
-    <script src="js/chart-deficit.js"></script>
-    <script src="js/chart-weight.js"></script>
-    <script src="js/chart-meals.js"></script>
-    <script src="js/chart-activity.js"></script>
--->
+    <script src="js/chart-activity-heatmap.js"></script>
 
     <script>
 
@@ -177,6 +184,7 @@
             var map = {
                 "deficit-weight":  updateDeficitWeightChart,
                 "activity-weight": updateActivityWeightChart,
+                "activity-heatmap": updateActivityHeatmap,
             };
             if (typeof map[name] === "function") {
                 map[name]();
@@ -198,9 +206,11 @@
 
             initDeficitWeightChart();
             initActivityWeightChart();
+            initActivityHeatmap();
 
             updateDeficitWeightChart();
             updateActivityWeightChart();
+            updateActivityHeatmap();
 
         }).catch(function(err) {
             document.getElementById("loading").textContent = "Error: " + err.message;

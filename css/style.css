@@ -16,6 +16,14 @@
     --color-deficit:  #4a90d9;
     --color-weight:   #7b5ea7;
     --color-activity: #e9a24b;
+
+    --color-rest:        #9b9b91;
+    --color-red:         #ff6b6b;
+    --color-yellow:      #ffd166;
+    --color-green-light: #7ae582;
+    --color-green:       #2dc653;
+    --color-green-dark:  #0f9d58;
+
     --color-breakfast:#f4a261;
     --color-lunch:    #2a9d8f;
     --color-dinner:   #e76f51;
@@ -231,7 +239,7 @@ main {
 
 .chart-body {
     width: 100%;
-    min-height: 360px;
+    min-height: 200px;
 }
 
 /* loading / empty state */

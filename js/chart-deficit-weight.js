@@ -154,7 +154,7 @@
             .attr("class", "zero-line")
             .attr("x1", 0).attr("x2", iW)
             .attr("y1", yDef(0)).attr("y2", yDef(0))
-            .attr("stroke", "var(--border)")
+            .attr("stroke", "var(--text-secondary)")
             .attr("stroke-dasharray", "5 5");
 
         /* draw - rolling average line */
