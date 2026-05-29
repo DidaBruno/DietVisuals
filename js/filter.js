@@ -4,6 +4,7 @@
 
 var _filters = {
     year:      null,   // number or null (null = all years)
+    quarter:   null,   // 1-4 or null (null = all quarters)
     month:     null,   // number 1-12 or null (null = all months)
     dateFrom:  null,   // Date or null
     dateTo:    null,   // Date or null
@@ -22,8 +23,15 @@ function _notifyCharts() {
 
 // setters
 function setYear(val) {
-    _filters.year  = val ? +val : null;
-    _filters.month = null; // reset month when year changes
+    _filters.year    = val ? +val : null;
+    _filters.month   = null; // reset month when year changes
+    _filters.quarter = null; // reset quarter when year changes
+    _notifyCharts();
+}
+
+function setQuarter(val) {
+    _filters.quarter = val ? +val : null;
+    _filters.month   = null; // quarter and month are mutually exclusive
     _notifyCharts();
 }
 
@@ -44,7 +52,7 @@ function setDateTo(val) {
 }
 
 function resetFilters() {
-    _filters = { year: null, month: null, dateFrom: null, dateTo: null };
+    _filters = { year: null, quarter: null, month: null, dateFrom: null, dateTo: null };
     _notifyCharts();
 }
 
@@ -53,6 +61,13 @@ function getFilteredData() {
     return getAllData().filter(function(r) {
         // year filter
         if (_filters.year !== null && r.year !== _filters.year) return false;
+
+        // quarter filter (Q1=months 1-3, Q2=4-6, Q3=7-9, Q4=10-12)
+        if (_filters.quarter !== null) {
+            var qStart = (_filters.quarter - 1) * 3 + 1;
+            var qEnd   = qStart + 2;
+            if (r.month < qStart || r.month > qEnd) return false;
+        }
 
         // month filter
         if (_filters.month !== null && r.month !== _filters.month) return false;

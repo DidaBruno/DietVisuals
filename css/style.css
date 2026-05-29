@@ -339,3 +339,27 @@ main {
     border-radius: 50%;
     flex-shrink: 0;
 }
+
+.btn-quarter {
+    font-family: "DM Mono", monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.3rem 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.btn-quarter:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+.btn-quarter.active {
+    background: var(--text-secondary);
+    color: #fff;
+    border-color: var(--text-secondary);
+}

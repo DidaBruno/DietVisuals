@@ -21,6 +21,8 @@
             <li><a href="#" data-chart="deficit-weight" class="active">Deficit & Weight</a></li>
             <li><a href="#" data-chart="activity-weight" class="active">Activity & Weight</a></li>
             <li><a href="#" data-chart="activity-heatmap" class="active">Activity Heatmap</a></li>
+            <li><a href="#" data-chart="meals" class="active">Meals</a></li>
+            <li><a href="#" data-chart="dow" class="active">Day of Week</a></li>
         </ul>
     </nav>
 
@@ -40,6 +42,16 @@
                 <option value="2025">2025</option>
                 <option value="2026">2026</option>
             </select>
+        </div>
+
+        <div class="filter-group">
+            <span class="filter-label">Quarter</span>
+            <div class="filter-range">
+                <button class="btn-quarter" data-q="1">Q1</button>
+                <button class="btn-quarter" data-q="2">Q2</button>
+                <button class="btn-quarter" data-q="3">Q3</button>
+                <button class="btn-quarter" data-q="4">Q4</button>
+            </div>
         </div>
 
         <div class="filter-group">
@@ -118,6 +130,28 @@
             </div>
         </section>
 
+        <!-- meals chart -->
+        <section class="chart-section active" id="section-meals">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h2 class="chart-title">Meal Breakdown</h2>
+                    <span class="chart-subtitle">daily breakfast, lunch and dinner calories over time</span>
+                </div>
+                <div class="chart-body" id="chart-meals"></div>
+            </div>
+        </section>
+
+        <!-- day of week chart -->
+        <section class="chart-section active" id="section-dow">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h2 class="chart-title">Meal Pattern</h2>
+                    <span class="chart-subtitle">average breakfast, lunch and dinner calories by day of week</span>
+                </div>
+                <div class="chart-body" id="chart-dow"></div>
+            </div>
+        </section>
+
     </main>
 
     <!-- scripts -->
@@ -126,6 +160,8 @@
     <script src="js/chart-deficit-weight.js"></script>
     <script src="js/chart-activity-weight.js"></script>
     <script src="js/chart-activity-heatmap.js"></script>
+    <script src="js/chart-meals.js"></script>
+    <script src="js/chart-dow.js"></script>
 
     <script>
 
@@ -159,6 +195,58 @@
             setYear(this.value);
         });
 
+        var QUARTER_MONTHS = {
+            1: { months: [1,2,3],   labels: ["Jan","Feb","Mar"] },
+            2: { months: [4,5,6],   labels: ["Apr","May","Jun"] },
+            3: { months: [7,8,9],   labels: ["Jul","Aug","Sep"] },
+            4: { months: [10,11,12],labels: ["Oct","Nov","Dec"] },
+        };
+
+        function updateMonthOptions(q) {
+            var select = document.getElementById("filter-month");
+            select.innerHTML = '<option value="">All</option>';
+            if (!q) {
+                // restore all months
+                var all = [
+                    [1,"Jan"],[2,"Feb"],[3,"Mar"],[4,"Apr"],[5,"May"],[6,"Jun"],
+                    [7,"Jul"],[8,"Aug"],[9,"Sep"],[10,"Oct"],[11,"Nov"],[12,"Dec"]
+                ];
+                all.forEach(function(m) {
+                    var opt = document.createElement("option");
+                    opt.value       = m[0];
+                    opt.textContent = m[1];
+                    select.appendChild(opt);
+                });
+            } else {
+                var qData = QUARTER_MONTHS[q];
+                qData.months.forEach(function(m, i) {
+                    var opt = document.createElement("option");
+                    opt.value       = m;
+                    opt.textContent = qData.labels[i];
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        document.querySelectorAll(".btn-quarter").forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                var q = +this.dataset.q;
+                var already = this.classList.contains("active");
+                document.querySelectorAll(".btn-quarter").forEach(function(b) {
+                    b.classList.remove("active");
+                });
+                document.getElementById("filter-month").value = "";
+                if (!already) {
+                    this.classList.add("active");
+                    setQuarter(q);
+                    updateMonthOptions(q);
+                } else {
+                    setQuarter(null);
+                    updateMonthOptions(null);
+                }
+            });
+        });
+
         document.getElementById("filter-month").addEventListener("change", function() {
             setMonth(this.value);
         });
@@ -176,6 +264,10 @@
             document.getElementById("filter-month").value = "";
             document.getElementById("filter-from").value  = "";
             document.getElementById("filter-to").value    = "";
+            document.querySelectorAll(".btn-quarter").forEach(function(b) {
+                b.classList.remove("active");
+            });
+            updateMonthOptions(null);
             resetFilters();
         });
 
@@ -185,6 +277,8 @@
                 "deficit-weight":  updateDeficitWeightChart,
                 "activity-weight": updateActivityWeightChart,
                 "activity-heatmap": updateActivityHeatmap,
+                "meals": updateMealsChart,
+                "dow": updateDowChart,
             };
             if (typeof map[name] === "function") {
                 map[name]();
@@ -207,10 +301,14 @@
             initDeficitWeightChart();
             initActivityWeightChart();
             initActivityHeatmap();
+            initMealsChart();
+            initDowChart();
 
             updateDeficitWeightChart();
             updateActivityWeightChart();
             updateActivityHeatmap();
+            updateMealsChart();
+            updateDowChart();
 
         }).catch(function(err) {
             document.getElementById("loading").textContent = "Error: " + err.message;

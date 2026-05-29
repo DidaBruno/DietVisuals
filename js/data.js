@@ -176,25 +176,21 @@ function groupByWeek(data) {
 
 function groupByDow(data) {
     var order = ["PON", "UTO", "SRI", "ČET", "PET", "SUB", "NED"];
-    
-    var nested = d3.nest()
-        .key(function(d) { return d.dow; })
-        .entries(data);
-    
-    // Build a lookup so we can return in the correct order
+
+    var grouped = d3.group(data, function(d) { return d.dow; });
+
     var lookup = {};
-    nested.forEach(function(group) {
-        var rows = group.values;
-        lookup[group.key] = {
-        dow:          group.key,
-        avgBreakfast: d3.mean(rows, function(r) { return r.breakfastKcal; }),
-        avgLunch:     d3.mean(rows, function(r) { return r.lunchKcal; }),
-        avgDinner:    d3.mean(rows, function(r) { return r.dinnerKcal; }),
-        avgTotal:     d3.mean(rows, function(r) { return r.totalIntake; }),
-        avgBurn:      d3.mean(rows, function(r) { return r.totalBurn; })
+    grouped.forEach(function(rows, key) {
+        lookup[key] = {
+            dow:          key,
+            avgBreakfast: d3.mean(rows, function(r) { return r.breakfastKcal; }),
+            avgLunch:     d3.mean(rows, function(r) { return r.lunchKcal; }),
+            avgDinner:    d3.mean(rows, function(r) { return r.dinnerKcal; }),
+            avgTotal:     d3.mean(rows, function(r) { return r.totalIntake; }),
+            avgBurn:      d3.mean(rows, function(r) { return r.totalBurn; })
         };
     });
-    
+
     return order
         .filter(function(d) { return lookup[d]; })
         .map(function(d) { return lookup[d]; });
